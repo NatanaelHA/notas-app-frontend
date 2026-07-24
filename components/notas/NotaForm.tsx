@@ -8,6 +8,7 @@ import Modal from '@/components/ui/Modal'
 import Spinner from '@/components/ui/Spinner'
 import { useNotasContext } from '@/context/notas/NotasContext'
 
+
 export default function NotaForm() {
   const { modal, cerrarModal, guardarNota } = useNotasContext()
 

@@ -3,6 +3,7 @@
 import { useNotasContext } from '@/context/notas/NotasContext'
 import NotaForm from '@/components/notas/NotaForm'
 import ConfirmDialog from '@/components/ui/ConfirmDialog'
+import Button from '@/components/ui/Button'
 import Spinner from '@/components/ui/Spinner'
 import { Nota } from '@/types/nota'
 import { AnimatePresence, motion } from 'motion/react'
@@ -38,13 +39,13 @@ export default function ListaNotas() {
   return (
     <>
       <div className='flex justify-end mb-6'>
-        <button
+        <Button
           onClick={abrirModalCrear}
-          className='flex items-center gap-2 bg-blue-600 dark:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 dark:hover:bg-blue-600 transition'
+          icon={<Plus size={18} />}
+          variant='indigo'
         >
-          <Plus size={16} />
           Nueva nota
-        </button>
+        </Button>
       </div>
 
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
