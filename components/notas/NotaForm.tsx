@@ -5,9 +5,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { notaSchema, NotaFormData } from '@/schemas/notaSchema'
 import InputField from '@/components/ui/InputField'
 import Modal from '@/components/ui/Modal'
+import Button from '@/components/ui/Button'
 import Spinner from '@/components/ui/Spinner'
 import { useNotasContext } from '@/context/notas/NotasContext'
-
 
 export default function NotaForm() {
   const { modal, cerrarModal, guardarNota } = useNotasContext()
@@ -53,22 +53,12 @@ export default function NotaForm() {
             <InputField label='Contenido' name='cuerpo' type='text' />
           </fieldset>
           <div className='flex gap-3 justify-end'>
-            <button
-              type='button'
-              onClick={cerrarModal}
-              disabled={cargando}
-              className='px-4 py-2 text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 disabled:hover:text-slate-600 dark:disabled:hover:text-slate-400 transition disabled:opacity-50 disabled:cursor-not-allowed'
-            >
+            <Button type='button' variant='ghost' onClick={cerrarModal} disabled={cargando}>
               Cancelar
-            </button>
-            <button
-              type='submit'
-              disabled={cargando}
-              className='flex items-center gap-2 px-4 py-2 text-sm bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 disabled:hover:bg-blue-600 dark:disabled:hover:bg-blue-500 transition disabled:opacity-50 disabled:cursor-not-allowed'
-            >
-              {cargando && <Spinner size={14} />}
+            </Button>
+            <Button type='submit' variant='primary' disabled={cargando} icon={cargando ? <Spinner size={14} /> : undefined}>
               {cargando ? 'Guardando...' : 'Guardar'}
-            </button>
+            </Button>
           </div>
         </form>
       </FormProvider>

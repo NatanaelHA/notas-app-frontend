@@ -8,6 +8,7 @@ import {
   LoginFormData,
 } from '@/schemas/loginSchema'
 import InputField from '@/components/ui/InputField'
+import Button from '@/components/ui/Button'
 import Spinner from '@/components/ui/Spinner'
 import { signIn } from 'aws-amplify/auth'
 import { useRouter } from 'next/navigation'
@@ -52,14 +53,15 @@ export default function LoginForm() {
         {authError && (
           <p className='text-red-500 dark:text-red-400 text-sm text-center'>{authError}</p>
         )}
-        <button
+        <Button
           type='submit'
+          variant='primary'
           disabled={cargando}
-          className='flex items-center justify-center gap-2 w-full bg-blue-600 dark:bg-blue-500 text-white py-2.5 rounded-md font-medium hover:bg-blue-700 dark:hover:bg-blue-600 disabled:hover:bg-blue-600 dark:disabled:hover:bg-blue-500 transition disabled:opacity-50 disabled:cursor-not-allowed'
+          icon={cargando ? <Spinner size={14} /> : undefined}
+          className='w-full'
         >
-          {cargando && <Spinner size={14} />}
           {cargando ? 'Iniciando sesión...' : 'Iniciar sesión'}
-        </button>
+        </Button>
       </form>
     </FormProvider>
   )

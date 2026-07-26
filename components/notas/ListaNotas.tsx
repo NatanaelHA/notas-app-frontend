@@ -39,11 +39,7 @@ export default function ListaNotas() {
   return (
     <>
       <div className='flex justify-end mb-6'>
-        <Button
-          onClick={abrirModalCrear}
-          icon={<Plus size={18} />}
-          variant='indigo'
-        >
+        <Button onClick={abrirModalCrear} icon={<Plus size={18} />} variant='indigo'>
           Nueva nota
         </Button>
       </div>
@@ -106,8 +102,7 @@ export default function ListaNotas() {
                 icono: eliminando ? <Spinner size={14} /> : undefined,
                 disabled: eliminando,
                 onClick: handleConfirmarEliminar,
-                className:
-                  'bg-red-600 dark:bg-red-500 hover:bg-red-700 dark:hover:bg-red-600',
+                variant: 'danger',
               },
             ]}
           />

@@ -1,12 +1,13 @@
 'use client'
 
 import Modal from '@/components/ui/Modal'
+import Button, { ButtonVariant } from '@/components/ui/Button'
 import { ReactNode } from 'react'
 
 interface ConfirmDialogAction {
   label: string
   onClick: () => void
-  className: string
+  variant: ButtonVariant
   icono?: ReactNode
   disabled?: boolean
 }
@@ -35,23 +36,19 @@ export default function ConfirmDialog({
         {mensaje}
       </p>
       <div className='flex gap-3 justify-end'>
-        <button
-          onClick={onCancelar}
-          disabled={cargando}
-          className='px-4 py-2 text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 disabled:hover:text-slate-600 dark:disabled:hover:text-slate-400 transition disabled:opacity-50 disabled:cursor-not-allowed'
-        >
+        <Button variant='ghost' onClick={onCancelar} disabled={cargando}>
           Cancelar
-        </button>
+        </Button>
         {acciones.map((accion, i) => (
-          <button
+          <Button
             key={i}
+            variant={accion.variant}
             onClick={accion.onClick}
             disabled={accion.disabled}
-            className={`flex items-center gap-2 px-4 py-2 text-sm text-white rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed ${accion.className}`}
+            icon={accion.icono}
           >
-            {accion.icono}
             {accion.label}
-          </button>
+          </Button>
         ))}
       </div>
     </Modal>

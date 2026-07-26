@@ -75,7 +75,7 @@ export default function Navbar() {
                 icono: cerrandoSesion ? <Spinner size={14} /> : undefined,
                 disabled: cerrandoSesion,
                 onClick: handleSignOut,
-                className: 'bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600',
+                variant: 'primary',
               },
             ]}
           />
