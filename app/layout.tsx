@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AmplifyProvider from "@/providers/AmplifyProvider";
 import ThemeProvider from "@/providers/ThemeProvider";
-import { Toaster } from "sonner";
+import ToasterConTema from "@/components/ui/ToasterConTema";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,7 +32,7 @@ export default function RootLayout({
           <AmplifyProvider>
             {children}
           </AmplifyProvider>
-          <Toaster position="top-right" richColors />
+          <ToasterConTema />
         </ThemeProvider>
       </body>
     </html>

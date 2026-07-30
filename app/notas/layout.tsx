@@ -1,4 +1,5 @@
 import Navbar from '@/components/layout/Navbar'
+import BadgeInvitado from '@/components/ui/BadgeInvitado'
 
 export default function NotasLayout({
   children,
@@ -11,6 +12,7 @@ export default function NotasLayout({
       <main className='p-8'>
         {children}
       </main>
+      <BadgeInvitado />
     </div>
   )
 }

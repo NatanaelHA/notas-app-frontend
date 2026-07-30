@@ -8,9 +8,12 @@ import Modal from '@/components/ui/Modal'
 import Button from '@/components/ui/Button'
 import Spinner from '@/components/ui/Spinner'
 import { useNotasContext } from '@/context/notas/NotasContext'
+import { useState } from 'react'
+import axios from 'axios'
 
 export default function NotaForm() {
   const { modal, cerrarModal, guardarNota } = useNotasContext()
+  const [errorGuardar, setErrorGuardar] = useState<string | null>(null)
 
   const notaEditando = modal.tipo === 'editar' ? modal.nota : null
 
@@ -31,9 +34,16 @@ export default function NotaForm() {
       return
     }
     try {
+      setErrorGuardar(null)
       await guardarNota(data.titulo, data.cuerpo)
     } catch (error) {
       console.error('Error al guardar nota:', error)
+
+      if (axios.isAxiosError(error) && error.response?.data?.mensaje) {
+        setErrorGuardar(error.response.data.mensaje)
+      } else {
+        setErrorGuardar('Ocurrió un error al guardar la nota, intenta de nuevo')
+      }
     }
   }
 
@@ -52,6 +62,9 @@ export default function NotaForm() {
             <InputField label='Título' name='titulo' type='text' />
             <InputField label='Contenido' name='cuerpo' type='text' />
           </fieldset>
+          {errorGuardar && (
+            <p className='text-red-500 dark:text-red-400 text-sm text-center'>{errorGuardar}</p>
+          )}
           <div className='flex gap-3 justify-end'>
             <Button type='button' variant='ghost' onClick={cerrarModal} disabled={cargando}>
               Cancelar
