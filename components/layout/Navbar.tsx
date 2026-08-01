@@ -30,7 +30,12 @@ export default function Navbar() {
     setCerrandoSesion(true)
     eliminarCredencialesInvitado()
     await signOut()
-    router.push('/login')
+    
+    // 1. Le decimos a Next.js que invalide su caché en memoria
+    router.refresh()
+    
+    // 2. Sobrescribimos el historial para que no exista "Atrás" hacia /notas
+    router.replace('/login')
   }
 
   return (
