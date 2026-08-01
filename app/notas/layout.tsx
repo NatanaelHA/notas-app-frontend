@@ -1,5 +1,6 @@
 import Navbar from '@/components/layout/Navbar'
 import BadgeInvitado from '@/components/ui/BadgeInvitado'
+import BfcacheGuard from '@/components/ui/BfcacheGuard'
 
 export default function NotasLayout({
   children,
@@ -13,6 +14,7 @@ export default function NotasLayout({
         {children}
       </main>
       <BadgeInvitado />
+      <BfcacheGuard />
     </div>
   )
 }
