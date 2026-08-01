@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import ConfirmDialog from '@/components/ui/ConfirmDialog'
 import Spinner from '@/components/ui/Spinner'
+import { eliminarCredencialesInvitado } from '@/lib/invitadoStorage'
 
 const ThemeToggle = dynamic(() => import('@/components/ui/ThemeToggle'), {
   ssr: false,
@@ -27,6 +28,7 @@ export default function Navbar() {
 
   const handleSignOut = async () => {
     setCerrandoSesion(true)
+    eliminarCredencialesInvitado()
     await signOut()
     router.push('/login')
   }

@@ -10,11 +10,12 @@ import {
 import InputField from '@/components/ui/InputField'
 import Button from '@/components/ui/Button'
 import Spinner from '@/components/ui/Spinner'
-import { signIn } from 'aws-amplify/auth'
+import { signIn, fetchUserAttributes  } from 'aws-amplify/auth'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { crearInvitado } from '@/services/notasService'
 import { useTypewriter } from '@/hooks/useTypewriter'
+import { guardarCredencialesInvitado } from '@/lib/invitadoStorage'
 import { Sparkles } from 'lucide-react'
 
 export default function LoginForm() {
@@ -33,6 +34,13 @@ export default function LoginForm() {
     try {
       setAuthError(null)
       await signIn({ username: data.email, password: data.password })
+
+      const attrs = await fetchUserAttributes()
+
+if (attrs['custom:esInvitado'] === 'true') {
+  guardarCredencialesInvitado(data.email, data.password)
+}
+
       setRedirigiendo(true)
       router.push('/notas')
     } catch (error: unknown) {
@@ -51,6 +59,8 @@ export default function LoginForm() {
 
       await escribir(email, (valor) => methods.setValue('email', valor))
       await escribir(password, (valor) => methods.setValue('password', valor))
+
+      guardarCredencialesInvitado(email, password)
 
       await signIn({ username: email, password })
       setRedirigiendo(true)
