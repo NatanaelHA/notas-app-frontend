@@ -17,7 +17,7 @@ export default function Modal({ children, onClose, maxWidth = 'max-w-md', bloque
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={bloqueado ? undefined : onClose}
-      className='fixed inset-0 bg-black/50 flex items-center justify-center z-50'
+      className='fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4'
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 10 }}
@@ -25,7 +25,7 @@ export default function Modal({ children, onClose, maxWidth = 'max-w-md', bloque
         exit={{ opacity: 0, scale: 0.95, y: 10 }}
         transition={{ duration: 0.15 }}
         onClick={(e) => e.stopPropagation()}
-        className={`bg-white dark:bg-slate-800 rounded-2xl p-6 w-full ${maxWidth} shadow-xl dark:shadow-black/30`}
+        className={`bg-white dark:bg-slate-800 rounded-2xl p-6 w-full ${maxWidth} max-h-[85vh] overflow-y-auto shadow-xl dark:shadow-black/30`}
       >
         {children}
       </motion.div>
