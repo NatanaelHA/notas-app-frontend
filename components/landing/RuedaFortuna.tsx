@@ -72,7 +72,7 @@ export default function RuedaFortuna() {
           disabled={navegando}
           className='w-full py-4 text-base'
         >
-          {navegando ? 'Cargando...' : 'Iniciar sesión'}
+          {navegando ? 'Cargando...' : 'Probar la app'}
         </Button>
 
         <div className='w-full space-y-3'>
@@ -126,7 +126,7 @@ export default function RuedaFortuna() {
             disabled={navegando}
             className='px-12 py-6 text-xl'
           >
-            {navegando ? 'Cargando...' : 'Iniciar sesión'}
+            {navegando ? 'Cargando...' : 'Probar la app'}
           </Button>
         </div>
 

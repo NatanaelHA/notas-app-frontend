@@ -39,7 +39,12 @@ export default function ListaNotas() {
   return (
     <>
       <div className='flex justify-end mb-6'>
-        <Button onClick={abrirModalCrear} icon={<Plus size={18} />} variant='indigo'>
+        <Button
+          onClick={abrirModalCrear}
+          icon={<Plus size={18} />}
+          variant='indigo'
+          className='w-full sm:w-auto'
+        >
           Nueva nota
         </Button>
       </div>
@@ -64,7 +69,7 @@ export default function ListaNotas() {
                 whileHover={{ scale: 1.25 }}
                 whileTap={{ scale: 0.9 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-                className='absolute top-3 right-3 p-2 rounded-full text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors'
+                className='absolute top-3 right-3 p-2 rounded-full text-red-500 dark:text-red-400 bg-white/80 dark:bg-slate-800/80 sm:bg-transparent sm:dark:bg-transparent hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors'
               >
                 <Trash2 size={16} />
               </motion.button>
