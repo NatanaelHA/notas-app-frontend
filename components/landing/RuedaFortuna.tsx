@@ -5,37 +5,12 @@ import { motion, AnimatePresence } from 'motion/react'
 import { tarjetasLanding, TarjetaLanding } from '@/lib/landingContent'
 import { useRouter } from 'next/navigation'
 import Button from '@/components/ui/Button'
-import Modal from '@/components/ui/Modal'
+import Modal from '@/components/ui/modal/Modal'
 import Spinner from '@/components/ui/Spinner'
 import { LogIn } from 'lucide-react'
+import TextoResaltado from '@/components/ui/TextoResaltado'
 
 const RADIO = 460
-
-interface TextoResaltadoProps {
-  texto: string
-  className?: string
-}
-
-function TextoResaltado({ texto, className = '' }: TextoResaltadoProps) {
-  const partes = texto.split(/\*\*(.*?)\*\*/g)
-
-  return (
-    <span className={className}>
-      {partes.map((parte, i) =>
-        i % 2 === 1 ? (
-          <strong
-            key={i}
-            className='font-semibold text-blue-600 dark:text-blue-400 group-hover:text-blue-300 dark:group-hover:text-blue-700'
-          >
-            {parte}
-          </strong>
-        ) : (
-          <span key={i}>{parte}</span>
-        ),
-      )}
-    </span>
-  )
-}
 
 export default function RuedaFortuna() {
   const router = useRouter()
@@ -160,6 +135,7 @@ export default function RuedaFortuna() {
               <TextoResaltado
                 texto={tarjeta.descripcion}
                 className='text-base text-slate-600 dark:text-slate-400 group-hover:text-slate-200 dark:group-hover:text-slate-600 transition-colors duration-300'
+                strongClassName='group-hover:text-blue-300 dark:group-hover:text-blue-700'
               />
             </motion.div>
           )

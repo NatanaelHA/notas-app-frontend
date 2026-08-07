@@ -75,28 +75,26 @@ export const pasosInvitado: PasoInvitado[] = [
   {
     numero: 1,
     titulo: 'Haces clic en "Probar como invitado"',
-    descripcion: 'No necesitas escribir ningún dato tuyo.',
+    descripcion: 'El frontend llama a una ruta pública de **API Gateway** — no necesitas escribir ningún dato tuyo.',
   },
   {
     numero: 2,
     titulo: 'Se genera una cuenta temporal',
-    descripcion: 'Cognito crea un email y contraseña únicos, automáticamente.',
+    descripcion: 'Una **Lambda** usa **AdminCreateUser** de **Cognito** para crear el email y la contraseña, sin verificación de email.',
   },
   {
     numero: 3,
     titulo: 'Inicias sesión al instante',
-    descripcion:
-      'Puedes copiar esas credenciales por si quieres volver más tarde.',
+    descripcion: 'El frontend inicia sesión directo contra **Cognito** con esas credenciales. Puedes copiarlas para volver más tarde.',
   },
   {
     numero: 4,
     titulo: 'Usas la app con normalidad',
-    descripcion: 'Hasta 20 notas, con todas las funciones disponibles.',
+    descripcion: 'Cada nota pasa por **API Gateway** y una **Lambda** antes de guardarse en **DynamoDB**. Hasta 20 notas por cuenta.',
   },
   {
     numero: 5,
     titulo: 'Se elimina en 24 horas',
-    descripcion:
-      'Un proceso revisa cada hora y borra solo las cuentas ya vencidas.',
+    descripcion: 'Un **EventBridge Scheduler** dispara una Lambda cada hora, que borra en Cognito y DynamoDB solo las cuentas ya vencidas.',
   },
 ]

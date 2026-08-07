@@ -1,6 +1,6 @@
 'use client'
 
-import Modal from '@/components/ui/Modal'
+import Modal from '@/components/ui/modal/Modal'
 import Button from '@/components/ui/Button'
 import Spinner from '@/components/ui/Spinner'
 import { pasosInvitado } from '@/lib/landingContent'
@@ -17,6 +17,7 @@ import {
 } from 'lucide-react'
 import { Fragment } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
+import TextoResaltado from '@/components/ui/TextoResaltado'
 
 interface InfoInvitadoModalProps {
   onClose: () => void
@@ -139,13 +140,12 @@ function TarjetaPaso({
         </h3>
       </div>
 
-      <p
-        className={`text-sm text-slate-500 dark:text-slate-400 ${
-          movil ? 'pl-9' : 'pl-20'
-        }`}
-      >
-        {paso.descripcion}
-      </p>
+      <TextoResaltado
+  texto={paso.descripcion}
+  className={`block text-sm text-slate-500 dark:text-slate-400 ${
+    movil ? 'pl-9' : 'pl-20'
+  }`}
+/>
     </motion.div>
   )
 }

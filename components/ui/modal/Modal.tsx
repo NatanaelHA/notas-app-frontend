@@ -53,6 +53,25 @@ export default function Modal({
   const brilloYObjetivo = useMotionValue(0)
   const opacidadBrilloObjetivo = useMotionValue(0)
 
+  const haloXObjetivo = useMotionValue(0)
+  const haloYObjetivo = useMotionValue(0)
+  const opacidadHaloObjetivo = useMotionValue(0)
+
+  const haloX = useSpring(haloXObjetivo, {
+    stiffness: 180,
+    damping: 26,
+  })
+
+  const haloY = useSpring(haloYObjetivo, {
+    stiffness: 180,
+    damping: 26,
+  })
+
+  const opacidadHalo = useSpring(opacidadHaloObjetivo, {
+    stiffness: 150,
+    damping: 24,
+  })
+
   const brilloX = useSpring(brilloXObjetivo, {
     stiffness: 260,
     damping: 28,
@@ -68,7 +87,22 @@ export default function Modal({
     damping: 24,
   })
 
-  const configuracionBrillo =
+  const configuracionBrilloClaro =
+    variant === 'guest'
+      ? {
+          radio: 190,
+          centro: 'rgba(37, 99, 235, 1)',
+          azulClaro: 'rgba(30, 64, 175, 0.85)',
+          azulProfundo: 'rgba(30, 58, 138, 0.5)',
+        }
+      : {
+          radio: 150,
+          centro: 'rgba(59, 130, 246, 0.95)',
+          azulClaro: 'rgba(37, 99, 235, 0.72)',
+          azulProfundo: 'rgba(29, 78, 216, 0.38)',
+        }
+
+  const configuracionBrilloOscuro =
     variant === 'guest'
       ? {
           radio: 190,
@@ -83,15 +117,34 @@ export default function Modal({
           azulProfundo: 'rgba(59, 130, 246, 0.2)',
         }
 
-  const fondoBrillo = useMotionTemplate`
+  const fondoBrilloClaro = useMotionTemplate`
+      radial-gradient(
+        ${configuracionBrilloClaro.radio}px circle at ${brilloX}px ${brilloY}px,
+        ${configuracionBrilloClaro.centro},
+        ${configuracionBrilloClaro.azulClaro} 35%,
+        ${configuracionBrilloClaro.azulProfundo} 58%,
+        transparent 78%
+      )
+    `
+
+  const fondoBrilloOscuro = useMotionTemplate`
+      radial-gradient(
+        ${configuracionBrilloOscuro.radio}px circle at ${brilloX}px ${brilloY}px,
+        ${configuracionBrilloOscuro.centro},
+        ${configuracionBrilloOscuro.azulClaro} 35%,
+        ${configuracionBrilloOscuro.azulProfundo} 58%,
+        transparent 78%
+      )
+    `
+
+const fondoHaloClaro = useMotionTemplate`
   radial-gradient(
-    ${configuracionBrillo.radio}px circle at ${brilloX}px ${brilloY}px,
-    ${configuracionBrillo.centro},
-    ${configuracionBrillo.azulClaro} 35%,
-    ${configuracionBrillo.azulProfundo} 58%,
-    transparent 78%
-    )
-  `
+    220px circle at ${haloX}px ${haloY}px,
+    rgba(37, 99, 235, 0.3),
+    rgba(59, 130, 246, 0.14) 32%,
+    transparent 33%
+  )
+`
 
   const manejarMovimiento = (e: React.PointerEvent<HTMLDivElement>) => {
     if (reducirMovimiento || e.pointerType !== 'mouse' || !modalRef.current) {
@@ -107,6 +160,7 @@ export default function Modal({
       e.clientY <= rect.bottom
 
     if (cursorDentroDelModal) {
+      opacidadHaloObjetivo.set(0)
       opacidadBrilloObjetivo.set(0)
       return
     }
@@ -117,11 +171,17 @@ export default function Modal({
 
     brilloXObjetivo.set(posicionX)
     brilloYObjetivo.set(posicionY)
+
+    haloXObjetivo.set(rect.left + posicionX)
+    haloYObjetivo.set(rect.top + posicionY)
+
     opacidadBrilloObjetivo.set(1)
+    opacidadHaloObjetivo.set(1)
   }
 
   const ocultarBrillo = () => {
     opacidadBrilloObjetivo.set(0)
+    opacidadHaloObjetivo.set(0)
   }
 
   const manejarToque = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -210,7 +270,7 @@ export default function Modal({
 
     temporizadorIndicadorRef.current = setTimeout(() => {
       setBordeScroll(null)
-    }, 900)
+    }, 420)
   }
 
   useEffect(() => {
@@ -237,13 +297,23 @@ export default function Modal({
       onPointerMove={manejarMovimiento}
       onPointerLeave={ocultarBrillo}
     >
+
+<motion.div
+  aria-hidden='true'
+  className='pointer-events-none absolute inset-0 z-0 dark:hidden'
+  style={{
+    background: fondoHaloClaro,
+    opacity: opacidadHalo,
+  }}
+/>
+
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 10 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 10 }}
         transition={{ duration: 0.15 }}
         onClick={(e) => e.stopPropagation()}
-        className={`relative bg-white dark:bg-slate-800 rounded-2xl w-full ${maxWidth} max-h-[85vh] overflow-hidden shadow-xl dark:shadow-black/30 border ${
+        className={`relative z-10 bg-white dark:bg-slate-800 rounded-2xl w-full ${maxWidth} max-h-[85vh] overflow-hidden shadow-xl dark:shadow-black/30 border ${
           variant === 'guest'
             ? 'border-blue-200 dark:border-blue-800'
             : 'border-transparent'
@@ -253,13 +323,24 @@ export default function Modal({
       >
         <motion.div
           aria-hidden='true'
-          className='pointer-events-none absolute inset-0 z-0 rounded-2xl p-px'
+          className='pointer-events-none absolute inset-0 z-0 rounded-2xl p-px dark:hidden'
           style={{
-            background: fondoBrillo,
+            background: fondoBrilloClaro,
             opacity: opacidadBrillo,
           }}
         >
-          <div className='h-full w-full rounded-[15px] bg-white dark:bg-slate-800' />
+          <div className='h-full w-full rounded-[15px] bg-white' />
+        </motion.div>
+
+        <motion.div
+          aria-hidden='true'
+          className='pointer-events-none absolute inset-0 z-0 hidden rounded-2xl p-px dark:block'
+          style={{
+            background: fondoBrilloOscuro,
+            opacity: opacidadBrillo,
+          }}
+        >
+          <div className='h-full w-full rounded-[15px] bg-slate-800' />
         </motion.div>
 
         <AnimatePresence>
@@ -282,7 +363,7 @@ export default function Modal({
                 scale: 0.85,
               }}
               transition={{
-                duration: 0.35,
+                duration: 0.18,
                 ease: 'easeOut',
               }}
               className={`pointer-events-none absolute inset-x-0 z-20 flex justify-center ${
@@ -295,8 +376,8 @@ export default function Modal({
                 animate={{ opacity: 1, scaleY: 1 }}
                 exit={{ opacity: 0, scaleY: 0.5 }}
                 transition={{
-                  duration: 0.45,
-                  delay: 0.05,
+                  duration: 0.22,
+                  delay: 0.02,
                   ease: 'easeOut',
                 }}
                 className={`absolute inset-x-0 z-0 ${
@@ -321,8 +402,8 @@ export default function Modal({
                 }}
                 animate={{ clipPath: 'inset(0 0 0 0)' }}
                 transition={{
-                  duration: 0.3,
-                  delay: 0.12,
+                  duration: 0.16,
+                  delay: 0.04,
                   ease: 'easeOut',
                 }}
                 className={`relative z-10 text-4xl font-black leading-none ${
