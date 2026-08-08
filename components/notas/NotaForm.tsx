@@ -65,11 +65,11 @@ export default function NotaForm() {
           {errorGuardar && (
             <p className='text-red-500 dark:text-red-400 text-sm text-center'>{errorGuardar}</p>
           )}
-          <div className='flex gap-3 justify-end'>
-            <Button type='button' variant='ghost' onClick={cerrarModal} disabled={cargando}>
+          <div className='flex flex-col-reverse sm:flex-row gap-3 sm:justify-end'>
+            <Button type='button' variant='ghost' onClick={cerrarModal} disabled={cargando} className='w-full sm:w-auto'>
               Cancelar
             </Button>
-            <Button type='submit' variant='primary' disabled={cargando} icon={cargando ? <Spinner size={14} /> : undefined}>
+            <Button type='submit' variant='primary' disabled={cargando} icon={cargando ? <Spinner size={14} /> : undefined} className='w-full sm:w-auto'>
               {cargando ? 'Guardando...' : 'Guardar'}
             </Button>
           </div>

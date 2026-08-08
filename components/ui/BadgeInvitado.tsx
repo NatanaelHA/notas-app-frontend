@@ -37,12 +37,10 @@ export default function BadgeInvitado() {
         >
           <button
             onClick={() => setExpandido(!expandido)}
-            className='w-max flex items-center justify-center gap-1.5 text-base text-amber-600 dark:text-amber-400 px-3 py-2'
+            className='w-full sm:w-max flex items-center justify-center gap-1.5 text-sm sm:text-base text-amber-600 dark:text-amber-400 px-3 py-2 whitespace-nowrap'
           >
             <Clock size={15} className='shrink-0' />
-            <span className='whitespace-nowrap sm:whitespace-normal'>
-              Cuenta de 24h de uso · limpieza global en {minutos}m {segundos}s
-            </span>
+            <span>Cuenta invitado · {minutos}m {segundos}s</span>
             <ChevronDown
               size={15}
               className={`shrink-0 transition-transform ${expandido ? 'rotate-180' : ''}`}
@@ -50,7 +48,7 @@ export default function BadgeInvitado() {
           </button>
 
           <AnimatePresence>
-            {expandido && credenciales && (
+            {expandido && (
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
@@ -58,30 +56,38 @@ export default function BadgeInvitado() {
                 className='border-t border-amber-200 dark:border-amber-900 px-3 py-3 space-y-2'
               >
                 <p className='text-xs text-amber-700 dark:text-amber-300'>
-                  Guarda estos datos si quieres volver a esta sesión más tarde:
+                  Cuenta temporal de 24h. Un proceso revisa cada hora y borra solo las cuentas vencidas — la próxima revisión es en {minutos}m {segundos}s.
                 </p>
-                <button
-                  onClick={() => copiar(credenciales.email, 'email')}
-                  className='w-full flex items-center justify-between gap-2 text-xs bg-white dark:bg-slate-800 rounded-lg px-2.5 py-1.5 text-slate-700 dark:text-slate-200'
-                >
-                  <span className='truncate'>{credenciales.email}</span>
-                  {copiado === 'email' ? (
-                    <Check size={13} className='shrink-0 text-emerald-500' />
-                  ) : (
-                    <Copy size={13} className='shrink-0' />
-                  )}
-                </button>
-                <button
-                  onClick={() => copiar(credenciales.password, 'password')}
-                  className='w-full flex items-center justify-between gap-2 text-xs bg-white dark:bg-slate-800 rounded-lg px-2.5 py-1.5 text-slate-700 dark:text-slate-200'
-                >
-                  <span className='truncate'>{credenciales.password}</span>
-                  {copiado === 'password' ? (
-                    <Check size={13} className='shrink-0 text-emerald-500' />
-                  ) : (
-                    <Copy size={13} className='shrink-0' />
-                  )}
-                </button>
+
+                {credenciales && (
+                  <>
+                    <p className='text-xs text-amber-700 dark:text-amber-300 pt-1'>
+                      Guarda estos datos si quieres volver a esta sesión más tarde:
+                    </p>
+                    <button
+                      onClick={() => copiar(credenciales.email, 'email')}
+                      className='w-full flex items-center justify-between gap-2 text-xs bg-white dark:bg-slate-800 rounded-lg px-2.5 py-1.5 text-slate-700 dark:text-slate-200'
+                    >
+                      <span className='truncate'>{credenciales.email}</span>
+                      {copiado === 'email' ? (
+                        <Check size={13} className='shrink-0 text-emerald-500' />
+                      ) : (
+                        <Copy size={13} className='shrink-0' />
+                      )}
+                    </button>
+                    <button
+                      onClick={() => copiar(credenciales.password, 'password')}
+                      className='w-full flex items-center justify-between gap-2 text-xs bg-white dark:bg-slate-800 rounded-lg px-2.5 py-1.5 text-slate-700 dark:text-slate-200'
+                    >
+                      <span className='truncate'>{credenciales.password}</span>
+                      {copiado === 'password' ? (
+                        <Check size={13} className='shrink-0 text-emerald-500' />
+                      ) : (
+                        <Copy size={13} className='shrink-0' />
+                      )}
+                    </button>
+                  </>
+                )}
               </motion.div>
             )}
           </AnimatePresence>

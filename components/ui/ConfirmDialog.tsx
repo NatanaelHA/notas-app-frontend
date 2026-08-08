@@ -35,8 +35,8 @@ export default function ConfirmDialog({
       <p className='text-slate-600 dark:text-slate-400 text-sm mb-6'>
         {mensaje}
       </p>
-      <div className='flex gap-3 justify-end'>
-        <Button variant='ghost' onClick={onCancelar} disabled={cargando}>
+      <div className='flex flex-col-reverse sm:flex-row gap-3 sm:justify-end'>
+        <Button variant='ghost' onClick={onCancelar} disabled={cargando} className='w-full sm:w-auto'>
           Cancelar
         </Button>
         {acciones.map((accion, i) => (
@@ -46,6 +46,7 @@ export default function ConfirmDialog({
             onClick={accion.onClick}
             disabled={accion.disabled}
             icon={accion.icono}
+            className='w-full sm:w-auto'
           >
             {accion.label}
           </Button>
