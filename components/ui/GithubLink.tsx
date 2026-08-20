@@ -21,6 +21,10 @@ const repos = [
     nombre: 'Backend · Usuarios',
     url: 'https://github.com/NatanaelHA/notas-app-usuarios',
   },
+  {
+    nombre: 'Backend · Notificaciones',
+    url: 'https://github.com/NatanaelHA/notas-app-notifications',
+  },
 ]
 
 const IconoGithub = () => (
