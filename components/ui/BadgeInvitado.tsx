@@ -64,28 +64,39 @@ export default function BadgeInvitado() {
                     <p className='text-xs text-amber-700 dark:text-amber-300 pt-1'>
                       Guarda estos datos si quieres volver a esta sesión más tarde:
                     </p>
-                    <button
-                      onClick={() => copiar(credenciales.email, 'email')}
-                      className='w-full flex items-center justify-between gap-2 text-xs bg-white dark:bg-slate-800 rounded-lg px-2.5 py-1.5 text-slate-700 dark:text-slate-200'
-                    >
-                      <span className='truncate'>{credenciales.email}</span>
-                      {copiado === 'email' ? (
-                        <Check size={13} className='shrink-0 text-emerald-500' />
-                      ) : (
-                        <Copy size={13} className='shrink-0' />
-                      )}
-                    </button>
-                    <button
-                      onClick={() => copiar(credenciales.password, 'password')}
-                      className='w-full flex items-center justify-between gap-2 text-xs bg-white dark:bg-slate-800 rounded-lg px-2.5 py-1.5 text-slate-700 dark:text-slate-200'
-                    >
-                      <span className='truncate'>{credenciales.password}</span>
-                      {copiado === 'password' ? (
-                        <Check size={13} className='shrink-0 text-emerald-500' />
-                      ) : (
-                        <Copy size={13} className='shrink-0' />
-                      )}
-                    </button>
+                    <div className='space-y-1'>
+                      <span className='block text-[11px] font-medium uppercase tracking-wide text-amber-700/80 dark:text-amber-300/80'>
+                        Email temporal
+                      </span>
+                      <button
+                        onClick={() => copiar(credenciales.email, 'email')}
+                        className='w-full flex items-center justify-between gap-2 text-xs bg-white dark:bg-slate-800 rounded-lg px-2.5 py-1.5 text-slate-700 dark:text-slate-200'
+                      >
+                        <span className='truncate'>{credenciales.email}</span>
+                        {copiado === 'email' ? (
+                          <Check size={13} className='shrink-0 text-emerald-500' />
+                        ) : (
+                          <Copy size={13} className='shrink-0' />
+                        )}
+                      </button>
+                    </div>
+
+                    <div className='space-y-1'>
+                      <span className='block text-[11px] font-medium uppercase tracking-wide text-amber-700/80 dark:text-amber-300/80'>
+                        Contraseña temporal
+                      </span>
+                      <button
+                        onClick={() => copiar(credenciales.password, 'password')}
+                        className='w-full flex items-center justify-between gap-2 text-xs bg-white dark:bg-slate-800 rounded-lg px-2.5 py-1.5 text-slate-700 dark:text-slate-200'
+                      >
+                        <span className='truncate'>{credenciales.password}</span>
+                        {copiado === 'password' ? (
+                          <Check size={13} className='shrink-0 text-emerald-500' />
+                        ) : (
+                          <Copy size={13} className='shrink-0' />
+                        )}
+                      </button>
+                    </div>
                   </>
                 )}
               </motion.div>
