@@ -83,10 +83,11 @@ export default function ListaNotas() {
                 {nota.actualizadoEn ? 'Editado: ' : 'Creado: '}
                 {new Date(
                   nota.actualizadoEn ?? nota.creadoEn,
-                ).toLocaleDateString('es-ES', {
+                ).toLocaleDateString('es-CL', {
                   day: 'numeric',
                   month: 'long',
                   year: 'numeric',
+                  timeZone: 'America/Santiago',
                 })}
               </span>
             </motion.div>
