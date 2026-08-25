@@ -37,7 +37,7 @@ export const tarjetasLanding: TarjetaLanding[] = [
     descripcion:
       'Un proceso revisa las cuentas cada hora, pero solo elimina las que ya superaron las **24h** — nunca las recién creadas.',
     descripcionExtendida:
-      'Implementado con **Amazon EventBridge Scheduler**, disparando una Lambda cada hora en punto. Cada cuenta invitado eliminada también dispara la eliminación en cascada de sus notas en **DynamoDB**, evitando dejar datos huérfanos en la base de datos.',
+      'Un **EventBridge Scheduler** dispara la Lambda `limpiarInvitados` cada hora. Por cada invitado vencido, la Lambda lo elimina de **Cognito** y publica el evento **InvitadoEliminado** en EventBridge. Ese evento llega automáticamente a `eliminarNotasInvitado`, que borra sus notas en **DynamoDB** — sin que el servicio de usuarios toque la base de datos de notas directamente.',
   },
   {
     icono: Layers,
@@ -51,9 +51,9 @@ export const tarjetasLanding: TarjetaLanding[] = [
     icono: CloudCog,
     titulo: 'Backend serverless',
     descripcion:
-      '**AWS Lambda**, **DynamoDB**, **Cognito**, SQS, SES y EventBridge, sin servidores que mantener.',
+      '**3 microservicios** independientes: notas, usuarios y notificaciones, comunicados por eventos.',
     descripcionExtendida:
-      '8 funciones **Lambda** en Node.js, expuestas mediante **API Gateway**. **DynamoDB** almacena las notas con soft delete y expiración automática (**TTL**). **SQS** y **SES** manejan notificaciones por email de forma asíncrona. Todo el despliegue está automatizado con **GitHub Actions**.',
+      'Arquitectura separada en 3 repositorios con responsabilidades claras: **notas-app** (DynamoDB, S3, SQS), **notas-app-usuarios** (Cognito, EventBridge) y **notas-app-notifications** (SES). Los servicios se comunican mediante un contrato de evento (**InvitadoEliminado**) publicado en **EventBridge**, sin compartir código ni base de datos. El despliegue de cada servicio está automatizado con **GitHub Actions**.',
   },
   {
     icono: ShieldCheck,
@@ -75,26 +75,31 @@ export const pasosInvitado: PasoInvitado[] = [
   {
     numero: 1,
     titulo: 'Haces clic en "Probar como invitado"',
-    descripcion: 'El frontend llama a una ruta pública de **API Gateway** — no necesitas escribir ningún dato tuyo.',
+    descripcion:
+      'El frontend llama a una ruta pública de **API Gateway** — no necesitas escribir ningún dato tuyo.',
   },
   {
     numero: 2,
     titulo: 'Se genera una cuenta temporal',
-    descripcion: 'Una **Lambda** usa **AdminCreateUser** de **Cognito** para crear el email y la contraseña, sin verificación de email.',
+    descripcion:
+      'Una **Lambda** usa **AdminCreateUser** de **Cognito** para crear el email y la contraseña, sin verificación de email.',
   },
   {
     numero: 3,
     titulo: 'Inicias sesión al instante',
-    descripcion: 'El frontend inicia sesión directo contra **Cognito** con esas credenciales. Puedes copiarlas para volver más tarde.',
+    descripcion:
+      'El frontend inicia sesión directo contra **Cognito** con esas credenciales. Puedes copiarlas para volver más tarde.',
   },
   {
     numero: 4,
     titulo: 'Usas la app con normalidad',
-    descripcion: 'Cada nota pasa por **API Gateway** y una **Lambda** antes de guardarse en **DynamoDB**. Hasta 20 notas por cuenta.',
+    descripcion:
+      'Cada nota pasa por **API Gateway** y una **Lambda** antes de guardarse en **DynamoDB**. Hasta 20 notas por cuenta.',
   },
   {
     numero: 5,
     titulo: 'Se elimina en 24 horas',
-    descripcion: 'Un **EventBridge Scheduler** dispara una Lambda cada hora, que borra en Cognito y DynamoDB solo las cuentas ya vencidas.',
+    descripcion:
+      'Un **EventBridge Scheduler** dispara una Lambda cada hora, que borra en Cognito y DynamoDB solo las cuentas ya vencidas.',
   },
 ]
