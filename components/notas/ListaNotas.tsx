@@ -6,9 +6,11 @@ import ConfirmDialog from '@/components/ui/ConfirmDialog'
 import Button from '@/components/ui/Button'
 import Spinner from '@/components/ui/Spinner'
 import { Nota } from '@/types/nota'
+import { descargarNotasPdf } from '@/lib/descargarNotasPdf'
 import { AnimatePresence, motion } from 'motion/react'
-import { Plus, Trash2 } from 'lucide-react'
+import { Download, Plus, Trash2 } from 'lucide-react'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 export default function ListaNotas() {
   const {
@@ -24,6 +26,7 @@ export default function ListaNotas() {
 
   const [botonHoverId, setBotonHoverId] = useState<string | null>(null)
   const [eliminando, setEliminando] = useState(false)
+  const [descargandoPdf, setDescargandoPdf] = useState(false)
 
   const handleClickEliminar = (e: React.MouseEvent, nota: Nota) => {
     e.stopPropagation()
@@ -36,9 +39,32 @@ export default function ListaNotas() {
     setEliminando(false)
   }
 
+  const handleDescargarNotas = async () => {
+    try {
+      setDescargandoPdf(true)
+      await descargarNotasPdf(notas)
+      toast.success('PDF descargado')
+    } catch (error) {
+      console.error('Error al generar el PDF:', error)
+      toast.error('No se pudo generar el PDF')
+    } finally {
+      setDescargandoPdf(false)
+    }
+  }
+
   return (
     <>
-      <div className='flex justify-end mb-6'>
+      <div className='flex flex-col sm:flex-row justify-end gap-3 mb-6'>
+        <Button
+          onClick={handleDescargarNotas}
+          icon={descargandoPdf ? <Spinner size={16} /> : <Download size={18} />}
+          variant='ghost'
+          disabled={notas.length === 0 || descargandoPdf}
+          className='w-full sm:w-auto'
+        >
+          {descargandoPdf ? 'Generando PDF...' : 'Descargar notas'}
+        </Button>
+
         <Button
           onClick={abrirModalCrear}
           icon={<Plus size={18} />}
