@@ -35,9 +35,9 @@ export const tarjetasLanding: TarjetaLanding[] = [
     icono: Timer,
     titulo: 'Limpieza automática',
     descripcion:
-      'Un proceso revisa las cuentas cada hora, pero solo elimina las que ya superaron las **24h** — nunca las recién creadas.',
+      'Invitados: cada hora elimina cuentas con más de **24h**. Usuarios reales: cada domingo elimina solo sus notas.',
     descripcionExtendida:
-      'Un **EventBridge Scheduler** dispara la Lambda `limpiarInvitados` cada hora. Por cada invitado vencido, la Lambda lo elimina de **Cognito** y publica el evento **InvitadoEliminado** en EventBridge. Ese evento llega automáticamente a `eliminarNotasInvitado`, que borra sus notas en **DynamoDB** — sin que el servicio de usuarios toque la base de datos de notas directamente.',
+      'Para invitados, **EventBridge Scheduler** ejecuta `limpiarInvitados` cada hora y detecta las cuentas con más de 24 horas. La función publica **InvitadoEliminado** en **EventBridge** y elimina la cuenta de **Cognito**. La regla correspondiente ejecuta `eliminarNotasInvitado`, que consulta las notas activas en **DynamoDB**, publica un resumen de auditoría en **SQS** y luego elimina todas las notas del invitado. Para usuarios reales, **EventBridge Scheduler** ejecuta `limpiarUsuarios` cada domingo. La función publica **UsuarioParaLimpieza** en **EventBridge**, que activa `eliminarNotasUsuario`: consulta las notas activas, publica el resumen de auditoría en **SQS** y elimina las notas, pero conserva la cuenta de **Cognito**. En ambos casos, el servicio de notificaciones consume el mensaje y solicita a **SES** que envíe el resumen al correo de auditoría verificado.',
   },
   {
     icono: Layers,
@@ -45,7 +45,7 @@ export const tarjetasLanding: TarjetaLanding[] = [
     descripcion:
       '**Next.js 16**, TypeScript, **Context API**, hooks personalizados y animaciones con Motion.',
     descripcionExtendida:
-      'Construido con **Next.js 16** (App Router) y **Tailwind CSS v4**. El estado de las notas se maneja con **Context API**, separando la lógica (hooks) de la presentación (componentes). Incluye hooks personalizados como el efecto typewriter del modo invitado o el cálculo del temporizador de limpieza, además de animaciones con **Motion** en modales, cards y transiciones de página.',
+      'Construido con **Next.js 16** (App Router) y **Tailwind CSS v4**. El estado de las notas se maneja con **Context API**, separando la lógica (hooks) de la presentación (componentes). Incluye contadores para la limpieza horaria de invitados y la limpieza semanal de notas de usuarios reales, además de la descarga de notas en **PDF** generada completamente en el navegador. También incorpora el efecto typewriter del modo invitado y animaciones con **Motion** en modales, cards y transiciones de página.',
   },
   {
     icono: CloudCog,
@@ -53,7 +53,7 @@ export const tarjetasLanding: TarjetaLanding[] = [
     descripcion:
       '**3 microservicios** independientes: notas, usuarios y notificaciones, comunicados por eventos.',
     descripcionExtendida:
-      'Arquitectura separada en 3 repositorios con responsabilidades claras: **notas-app** (DynamoDB, S3, SQS), **notas-app-usuarios** (Cognito, EventBridge) y **notas-app-notifications** (SES). Los servicios se comunican mediante un contrato de evento (**InvitadoEliminado**) publicado en **EventBridge**, sin compartir código ni base de datos. El despliegue de cada servicio está automatizado con **GitHub Actions**.',
+      'Arquitectura formada por 3 microservicios independientes: **notas-app** administra las notas y sus datos con **Lambda**, **DynamoDB** y S3; **notas-app-usuarios** gestiona las cuentas y los procesos de limpieza con **Lambda**, **Cognito** y **EventBridge**; y **notas-app-notifications** consume mensajes de **SQS** y envía auditorías mediante **SES**. El mailer ya no genera un correo por cada nota creada: ahora envía resúmenes útiles cuando expira un invitado y durante la limpieza semanal de usuarios reales. Los servicios se comunican mediante los eventos InvitadoEliminado y UsuarioParaLimpieza publicados en **EventBridge**, y cada repositorio cuenta con su propio despliegue automatizado mediante **GitHub Actions**.',
   },
   {
     icono: ShieldCheck,
@@ -74,32 +74,32 @@ export interface PasoInvitado {
 export const pasosInvitado: PasoInvitado[] = [
   {
     numero: 1,
-    titulo: 'Haces clic en "Probar como invitado"',
+    titulo: 'Pruebas la app sin registrarte',
     descripcion:
-      'El frontend llama a una ruta pública de **API Gateway** — no necesitas escribir ningún dato tuyo.',
+      'No necesitas entregar datos personales ni crear una cuenta manualmente.',
   },
   {
     numero: 2,
-    titulo: 'Se genera una cuenta temporal',
+    titulo: 'Recibes una cuenta temporal',
     descripcion:
-      'Una **Lambda** usa **AdminCreateUser** de **Cognito** para crear el email y la contraseña, sin verificación de email.',
+      'La aplicación genera automáticamente un email y una contraseña para tu sesión.',
   },
   {
     numero: 3,
     titulo: 'Inicias sesión al instante',
     descripcion:
-      'El frontend inicia sesión directo contra **Cognito** con esas credenciales. Puedes copiarlas para volver más tarde.',
+      'Puedes copiar las credenciales para volver a entrar mientras la cuenta siga activa.',
   },
   {
     numero: 4,
     titulo: 'Usas la app con normalidad',
     descripcion:
-      'Cada nota pasa por **API Gateway** y una **Lambda** antes de guardarse en **DynamoDB**. Hasta 20 notas por cuenta.',
+      'Puedes crear, editar y eliminar hasta 20 notas, además de descargarlas en PDF.',
   },
   {
     numero: 5,
-    titulo: 'Se elimina en 24 horas',
+    titulo: 'La cuenta expira después de 24 horas',
     descripcion:
-      'Un **EventBridge Scheduler** dispara una Lambda cada hora, que borra en Cognito y DynamoDB solo las cuentas ya vencidas.',
+      'El sistema revisa las cuentas cada hora. Cuando la tuya vence, envía un resumen de auditoría de las notas activas y luego elimina la cuenta y todas sus notas.',
   },
 ]
