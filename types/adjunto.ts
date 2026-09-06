@@ -1,4 +1,10 @@
 export interface PresignedUrlResponse {
     url: string
-    key: string
-  }
+    adjuntoRuta: string
+}
+
+export type EtapaGuardadoNota =
+  | 'guardando-nota'
+  | 'preparando-imagen'
+  | 'subiendo-imagen'
+  | 'asociando-imagen'
