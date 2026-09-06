@@ -6,7 +6,10 @@ export interface Nota {
     activo: boolean
     creadoEn: string
     actualizadoEn?: string
-    adjuntoKey?: string
+    adjuntoRuta?: string
+    adjuntoNombre?: string
+    adjuntoTipo?: string
+    adjuntoTamano?: number
     adjuntoUrl?: string
     desactivadoEn?: string
   }

@@ -1,4 +1,5 @@
 import type { Nota } from '@/types/nota'
+import { cargarImagenPdf } from '@/lib/pdf/cargarImagenPdf'
 
 const formatearFecha = (fecha: string) =>
   new Intl.DateTimeFormat('es-CL', {
@@ -38,6 +39,44 @@ export async function descargarNotasPdf(notas: Nota[]) {
     }
   }
 
+  const agregarImagen = async (nota: Nota) => {
+    if (!nota.adjuntoUrl) return
+
+    try {
+      const datosImagen = await cargarImagenPdf(nota.adjuntoUrl)
+      const propiedades = pdf.getImageProperties(datosImagen)
+      const anchoMaximo = anchoContenido
+      const altoMaximo = 100
+      let anchoImagen = anchoMaximo
+      let altoImagen = anchoImagen * (propiedades.height / propiedades.width)
+
+      if (altoImagen > altoMaximo) {
+        altoImagen = altoMaximo
+        anchoImagen = altoImagen * (propiedades.width / propiedades.height)
+      }
+
+      agregarPaginaSiEsNecesario(altoImagen + 4)
+
+      const posicionX = margen + (anchoContenido - anchoImagen) / 2
+      pdf.addImage(
+        datosImagen,
+        propiedades.fileType,
+        posicionX,
+        posicionY,
+        anchoImagen,
+        altoImagen,
+      )
+      posicionY += altoImagen + 5
+    } catch (error) {
+      console.warn(`No se pudo incluir la imagen de la nota ${nota.noteId}:`, error)
+      pdf.setFont('helvetica', 'italic')
+      pdf.setFontSize(9)
+      pdf.setTextColor(148, 163, 184)
+      escribirLineas(['Imagen adjunta no disponible'], { altoLinea: 5 })
+      posicionY += 2
+    }
+  }
+
   pdf.setFont('helvetica', 'bold')
   pdf.setFontSize(20)
   pdf.setTextColor(30, 41, 59)
@@ -54,7 +93,7 @@ export async function descargarNotasPdf(notas: Nota[]) {
   )
   posicionY += 12
 
-  notas.forEach((nota, indice) => {
+  for (const [indice, nota] of notas.entries()) {
     agregarPaginaSiEsNecesario(24)
 
     pdf.setFont('helvetica', 'bold')
@@ -73,7 +112,6 @@ export async function descargarNotasPdf(notas: Nota[]) {
     pdf.setTextColor(100, 116, 139)
     escribirLineas([
       `${nota.actualizadoEn ? 'Actualizada' : 'Creada'}: ${formatearFecha(nota.actualizadoEn ?? nota.creadoEn)}`,
-      `ID: ${nota.noteId}`,
     ], { altoLinea: 4.5 })
 
     posicionY += 2
@@ -85,6 +123,7 @@ export async function descargarNotasPdf(notas: Nota[]) {
     )
 
     posicionY += 5
+    await agregarImagen(nota)
 
     if (indice < notas.length - 1) {
       agregarPaginaSiEsNecesario(4)
@@ -92,7 +131,7 @@ export async function descargarNotasPdf(notas: Nota[]) {
       pdf.line(margen, posicionY, anchoPagina - margen, posicionY)
       posicionY += 8
     }
-  })
+  }
 
   const cantidadPaginas = pdf.getNumberOfPages()
 

@@ -7,6 +7,7 @@ import Button from '@/components/ui/Button'
 import Spinner from '@/components/ui/Spinner'
 import { Nota } from '@/types/nota'
 import { descargarNotasPdf } from '@/lib/descargarNotasPdf'
+import { obtenerNotas as obtenerNotasAPI } from '@/services/notasService'
 import { AnimatePresence, motion } from 'motion/react'
 import { Download, Plus, Trash2 } from 'lucide-react'
 import { useState } from 'react'
@@ -34,15 +35,23 @@ export default function ListaNotas() {
   }
 
   const handleConfirmarEliminar = async () => {
-    setEliminando(true)
-    await confirmarEliminar()
-    setEliminando(false)
+    try {
+      setEliminando(true)
+      await confirmarEliminar()
+    } catch (error) {
+      console.error('Error al eliminar la nota:', error)
+      toast.error('No se pudo eliminar la nota')
+    } finally {
+      setEliminando(false)
+    }
   }
 
   const handleDescargarNotas = async () => {
     try {
       setDescargandoPdf(true)
-      await descargarNotasPdf(notas)
+      const tieneAdjuntos = notas.some((nota) => nota.adjuntoRuta)
+      const notasParaPdf = tieneAdjuntos ? await obtenerNotasAPI() : notas
+      await descargarNotasPdf(notasParaPdf)
       toast.success('PDF descargado')
     } catch (error) {
       console.error('Error al generar el PDF:', error)
@@ -99,6 +108,16 @@ export default function ListaNotas() {
               >
                 <Trash2 size={16} />
               </motion.button>
+              {nota.adjuntoUrl && (
+                <div className='mb-3 h-40 overflow-hidden rounded-lg bg-slate-100 dark:bg-slate-900'>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={nota.adjuntoUrl}
+                    alt={nota.adjuntoNombre ?? `Imagen adjunta de ${nota.titulo}`}
+                    className='h-full w-full object-cover'
+                  />
+                </div>
+              )}
               <h2 className='font-semibold text-slate-900 dark:text-slate-100 mb-2 pr-6'>
                 {nota.titulo}
               </h2>
